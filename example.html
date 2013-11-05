@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- support scripts -->
+    <script type="text/javascript" src="../js/2.5.3-crypto-sha1.js"></script>
+    <script type="text/javascript" src="../js/base64.js"></script>
+
+    <!-- ADL scripts -->
+    <script type="text/javascript" src="../js/verbs.js"></script>
+    <script type="text/javascript" src="../js/xapiwrapper.js"></script>
+    <script type="text/javascript" src="./xapivideo.js"></script>
+<!--
+    <script type="text/javascript">
+        ADL.XAPIWrapper.changeConfig({"endpoint":"https://lrs.adlnet.gov/xapi/", "user":"tom", "password":"1234"});
+    </script>
+-->
+    <script type="text/javascript">
+        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"tom", "password":"1234"});
+    </script>
+
+    <script type="text/javascript" src="../vendor/projekktor/jquery-1.7.2.min.js"></script>
+    
+    <script type="text/javascript" src="../vendor/projekktor/projekktor.min.js"></script>
+    <link rel="stylesheet" href="../vendor/projekktor/theme/maccaco/projekktor.style.css" type="text/css" media="screen" />
+</head>
+<body>
+	<video id="player_a" class="projekktor" poster="../media/adllogo.png" title="adl video player" width="640" height="360" controls>
+        <!-- works and tracks using code below -->
+        <source src="http://localhost/test/media/intro.mp4" type="video/mp4" />
+        <!-- works... but tracking is goofy -->
+        <!-- <source src="http://www.youtube.com/watch?v=YkFbKh7d5EI" type="video/youtube" /> -->
+    </video>
+
+
+    <script type="text/javascript">
+
+    $(document).ready(function() {
+        projekktor('#player_a', {
+        volume: 0.8,
+        playerFlashMP4: 'http://www.yourdomain.com/test/projekktor/jarisplayer.swf',
+        playerFlashMP3: 'http://www.yourdomain.com/test/projekktor/jarisplayer.swf'
+        }, function(player) {
+            ADL.XAPIVideo.addVideo(player);
+        });
+    });
+    </script> 
+	
+</body>
+</html>
