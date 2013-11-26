@@ -2,48 +2,73 @@
 <html lang="en">
 <head>
 	<!-- support scripts -->
-    <script type="text/javascript" src="../js/2.5.3-crypto-sha1.js"></script>
-    <script type="text/javascript" src="../js/base64.js"></script>
+    <script type="text/javascript" src="./js/2.5.3-crypto-sha1.js"></script>
+    <script type="text/javascript" src="./js/base64.js"></script>
+    <script src="http://code.jquery.com/jquery.js"></script>
 
     <!-- ADL scripts -->
-    <script type="text/javascript" src="../js/verbs.js"></script>
-    <script type="text/javascript" src="../js/xapiwrapper.js"></script>
-    <script type="text/javascript" src="./xapivideo.js"></script>
-<!--
+    <script type="text/javascript" src="./verbs/verbs.js"></script>
+    <script type="text/javascript" src="./xapiwrapper/xapiwrapper.js"></script>
+    <script type="text/javascript" src="./xapipopcorn.js"></script>
+
     <script type="text/javascript">
-        ADL.XAPIWrapper.changeConfig({"endpoint":"https://lrs.adlnet.gov/xapi/", "user":"tom", "password":"1234"});
-    </script>
--->
-    <script type="text/javascript">
-        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"tom", "password":"1234"});
+        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"lou", "password":"password"});
     </script>
 
-    <script type="text/javascript" src="../vendor/projekktor/jquery-1.7.2.min.js"></script>
-    
-    <script type="text/javascript" src="../vendor/projekktor/projekktor.min.js"></script>
-    <link rel="stylesheet" href="../vendor/projekktor/theme/maccaco/projekktor.style.css" type="text/css" media="screen" />
-</head>
-<body>
-	<video id="player_a" class="projekktor" poster="../media/adllogo.png" title="adl video player" width="640" height="360" controls>
-        <!-- works and tracks using code below -->
-        <source src="http://localhost/test/media/intro.mp4" type="video/mp4" />
-        <!-- works... but tracking is goofy -->
-        <!-- <source src="http://www.youtube.com/watch?v=YkFbKh7d5EI" type="video/youtube" /> -->
-    </video>
+    <!-- <script src="http://cdn.popcornjs.org/code/dist/popcorn-complete.min.js"></script> -->
+    <script src="http://cdn.popcornjs.org/code/dist/popcorn-ie8.min.js"></script>
 
+    <script>
+        $(document).ready(function(){
+             // var pop = Popcorn("#popvid")
+             //  pop.footnote({
+             //   start: 2,
+             //   end: 6,
+             //   text: "Pop!",
+             //   target: "footnotediv"
+             // });
+             var pop = Popcorn("#popvid",{
+                  id:"popvid",
+                  defaults:{
+                      footnote:{
+                       start: 2,
+                       end: 6,
+                       text: "Pop!",
+                       target: "footnotediv"
+                        }
+                    }
+             });              
+             ADL.XAPIVideo.addVideo(pop);
+             // var popyou = Popcorn.youtube("#youtube", "http://www.youtube.com/watch?v=FWtO0cfgewY");
+             // popyou.footnote({
+             //    start:20,
+             //    end:22,
+             //    text: "leviosaaaa",
+             //    target:"foo"
+             // });
+             // ADL.XAPIVideo.addVideo(popyou);
+             // popyou.play();              
+            // create our popcorn instance
+            var popu = Popcorn.youtube( "#youtube", "http://www.youtube.com/watch?v=v-7kf7OZQtw" );
+                popu.footnote({
+                    start: 1,
+                    end: 15,
+                    text: "Youtube working!",
+                    target: "foo"
+                });
 
-    <script type="text/javascript">
-
-    $(document).ready(function() {
-        projekktor('#player_a', {
-        volume: 0.8,
-        playerFlashMP4: 'http://www.yourdomain.com/test/projekktor/jarisplayer.swf',
-        playerFlashMP3: 'http://www.yourdomain.com/test/projekktor/jarisplayer.swf'
-        }, function(player) {
-            ADL.XAPIVideo.addVideo(player);
+            // play video
+            popu.play();
         });
-    });
     </script> 
-	
+</head>
+
+<body>
+    <video id="popvid" title="adl video player" width="640" height="360" controls>
+      <source src="./media/intro.mp4" type="video/mp4" />        
+    </video>
+    <div id="footnotediv"></div>
+    <div id="youtube" style="width:600px;height:400px;"></div>
+    <div id="foo"></div>
 </body>
 </html>

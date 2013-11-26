@@ -1,0 +1,6 @@
+[submodule "verbs"]
+	path = verbs
+	url = https://github.com/adlnet/xAPIVerbs.git
+[submodule "xapiwrapper"]
+	path = xapiwrapper
+	url = https://github.com/adlnet/xAPIWrapper.git
