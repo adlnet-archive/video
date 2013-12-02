@@ -16,17 +16,10 @@
     </script>
 
     <!-- <script src="http://cdn.popcornjs.org/code/dist/popcorn-complete.min.js"></script> -->
-    <script src="http://cdn.popcornjs.org/code/dist/popcorn-ie8.min.js"></script>
+    <script src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
 
     <script>
         $(document).ready(function(){
-             // var pop = Popcorn("#popvid")
-             //  pop.footnote({
-             //   start: 2,
-             //   end: 6,
-             //   text: "Pop!",
-             //   target: "footnotediv"
-             // });
              var pop = Popcorn("#popvid",{
                   id:"popvid",
                   defaults:{
@@ -39,6 +32,8 @@
                     }
              });              
              ADL.XAPIVideo.addVideo(pop);
+             pop.play();
+
              // var popyou = Popcorn.youtube("#youtube", "http://www.youtube.com/watch?v=FWtO0cfgewY");
              // popyou.footnote({
              //    start:20,
@@ -47,18 +42,9 @@
              //    target:"foo"
              // });
              // ADL.XAPIVideo.addVideo(popyou);
-             // popyou.play();              
-            // create our popcorn instance
-            var popu = Popcorn.youtube( "#youtube", "http://www.youtube.com/watch?v=v-7kf7OZQtw" );
-                popu.footnote({
-                    start: 1,
-                    end: 15,
-                    text: "Youtube working!",
-                    target: "foo"
-                });
+             // popyou.play();
 
-            // play video
-            popu.play();
+
         });
     </script> 
 </head>
