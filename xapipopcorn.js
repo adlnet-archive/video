@@ -18,9 +18,11 @@
         var midwayhit = false;
         var thirdqhit = false;
         var completed = false;
-		var is_tracking = true;
-        var objectURI = player.media.children[0].src;
-        var videoActivity = {"id":objectURI};          
+		var isTracking = true;
+        //youtube videos don't have children
+        var objectURI = player.media.children[0].src ? player.media.children[0].src : player.media.src;
+        var videoActivity = {"id":objectURI, "definition":{"name": {"en-US":playerID}}};
+        //you can edit the actor inside of the wrapper or just include it here
         var actor = ADL.XAPIWrapper.lrs.actor ? ADL.XAPIWrapper.lrs.actor : 
             {"account":{"name":"lou", "homePage":"uri:testaccount"}};
 
@@ -41,17 +43,17 @@
             if (!firstqhit && myplayer.roundTime() == Math.round(myplayer.duration() * .25)){
                 console.log('video ' + playerID + ' first point')
                 firstqhit = true
-                middlestuff("#firstquartile", myplayer.roundTime())
+                middlestuff("firstquartile", myplayer.roundTime())
             }
             else if (!midwayhit && myplayer.roundTime() == Math.round(myplayer.duration() * .5)){
                 console.log('video ' + playerID + ' half point')
                 midwayhit = true
-                middlestuff("#midway", myplayer.roundTime())
+                middlestuff("midway", myplayer.roundTime())
             }
             else if (!thirdqhit && myplayer.roundTime() == Math.round(myplayer.duration() * .75)){
                 console.log('video ' + playerID + ' third point')
                 thirdqhit = true
-                middlestuff("#thirdquartile", myplayer.roundTime())
+                middlestuff("thirdquartile", myplayer.roundTime())
             }
          });
 
@@ -85,39 +87,42 @@
             }
             //reporting for resuming video
             else{
-                var duration = "PT"+Math.round(myplayer.roundTime()) + "S";
+                var resumeTime = "PT"+Math.round(myplayer.roundTime()) + "S";
                 report({"actor":actor, 
                         "verb":ADL.verbs.resumed, 
                         "object":videoActivity, 
-                        "result":{"duration":duration}});
+                        "result":{"extensions":{"resultExt:resumed":resumeTime}}});
             }
         }
 
-        function middlestuff(hashtag, benchTime) {
-            var benchObj = {"id":objectURI + hashtag};
-            var duration = "PT"+Math.round(benchTime) + "S";
+        function middlestuff(quartile, benchTime) {
+            var benchObj = {"id":objectURI + "#" + quartile, "definition":{"name":{"en-US":playerID + "#" + quartile}}};
+            var bench = "PT"+Math.round(benchTime) + "S";
+            var extKey = "resultExt:" + quartile
+            var result = {"extensions":{}};
+            result["extensions"][extKey] = bench
             var context = {"contextActivities":{"parent" : [videoActivity]}};
-            report({"actor":actor, 
-                    "verb":ADL.verbs.progressed, 
-                    "object":benchObj, 
-                    "result":{"duration":duration},
+            report({"actor":actor,
+                    "verb":ADL.verbs.progressed,
+                    "object":benchObj,
+                    "result":result,
                     "context":context});
         }
 
         function pausestuff(pauseTime){
-            var duration = "PT"+Math.round(pauseTime) + "S";
+            var paused = "PT"+Math.round(pauseTime) + "S";
             report({"actor":actor, 
                     "verb":ADL.verbs.suspended, 
                     "object":videoActivity, 
-                    "result":{"duration":duration}});
+                    "result":{"extensions":{"resultExt:paused":paused}}});
         }
 
         function seekstuff(seekTime){
-            var duration = "PT"+Math.round(seekTime) + "S";          
+            var seeked = "PT"+Math.round(seekTime) + "S";          
             report({"actor":actor, 
                     "verb":ADL.verbs.interacted, 
                     "object":videoActivity, 
-                    "result":{"duration":duration}});
+                    "result":{"extensions":{"resultExt:seeked": seeked}}});
         }
 
         function endstuff(endTime) {
@@ -125,7 +130,7 @@
             report({"actor":actor, 
                     "verb":ADL.verbs.completed, 
                     "object":videoActivity, 
-                    "result":{"duration":duration}});
+                    "result":{"duration":duration, "completion": true}});
             firstqhit = midwayhit = thirdqhit = false;
         }
 
@@ -133,11 +138,11 @@
         function report (stmt) {
             if (stmt) {
                 stmt['timestamp'] = (new Date()).toISOString();
-                if (is_tracking) {
+                if (isTracking) {
                     ADL.XAPIWrapper.sendStatement(stmt, function(){});
                 }
                 else {
-                    log("would send this statement if 'is_tracking' was true.");
+                    log("would send this statement if 'isTracking' was true.");
                     log(stmt);
                 }
             }

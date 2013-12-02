@@ -20,8 +20,8 @@
 
     <script>
         $(document).ready(function(){
-             var pop = Popcorn("#popvid",{
-                  id:"popvid",
+             var pop = Popcorn("#adlvid",{
+                  id:"adlvid",
                   defaults:{
                       footnote:{
                        start: 2,
@@ -34,7 +34,7 @@
              ADL.XAPIVideo.addVideo(pop);
              pop.play();
 
-             // var popyou = Popcorn.youtube("#youtube", "http://www.youtube.com/watch?v=FWtO0cfgewY");
+             // var popyou = Popcorn.youtube("#youtube", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
              // popyou.footnote({
              //    start:20,
              //    end:22,
@@ -43,14 +43,13 @@
              // });
              // ADL.XAPIVideo.addVideo(popyou);
              // popyou.play();
-
-
+        
         });
     </script> 
 </head>
 
 <body>
-    <video id="popvid" title="adl video player" width="640" height="360" controls>
+    <video id="adlvid" title="adl video player" width="640" height="360" controls>
       <source src="./media/intro.mp4" type="video/mp4" />        
     </video>
     <div id="footnotediv"></div>
