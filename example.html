@@ -5,6 +5,7 @@
     <script type="text/javascript" src="./js/2.5.3-crypto-sha1.js"></script>
     <script type="text/javascript" src="./js/base64.js"></script>
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
 
     <!-- ADL scripts -->
     <script type="text/javascript" src="./verbs/verbs.js"></script>
@@ -12,38 +13,18 @@
     <script type="text/javascript" src="./xapipopcorn.js"></script>
 
     <script type="text/javascript">
-        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"lou", "password":"password"});
+        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"test", "password":"password"});
     </script>
-
-    <!-- <script src="http://cdn.popcornjs.org/code/dist/popcorn-complete.min.js"></script> -->
-    <script src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
 
     <script>
         $(document).ready(function(){
-             var pop = Popcorn("#adlvid",{
-                  id:"adlvid",
-                  defaults:{
-                      footnote:{
-                       start: 2,
-                       end: 6,
-                       text: "Pop!",
-                       target: "footnotediv"
-                        }
-                    }
-             });              
+             var pop = Popcorn("#adlvid",{id:"adlvid"});
              ADL.XAPIVideo.addVideo(pop);
              pop.play();
 
-             // var popyou = Popcorn.youtube("#youtube", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
-             // popyou.footnote({
-             //    start:20,
-             //    end:22,
-             //    text: "leviosaaaa",
-             //    target:"foo"
-             // });
-             // ADL.XAPIVideo.addVideo(popyou);
-             // popyou.play();
-        
+             var popyou = Popcorn.youtube("#youtubevid", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
+             ADL.XAPIVideo.addVideo(popyou);
+             popyou.play();
         });
     </script> 
 </head>
@@ -52,8 +33,6 @@
     <video id="adlvid" title="adl video player" width="640" height="360" controls>
       <source src="./media/intro.mp4" type="video/mp4" />        
     </video>
-    <div id="footnotediv"></div>
-    <div id="youtube" style="width:600px;height:400px;"></div>
-    <div id="foo"></div>
+    <div id="youtubevid" style="width:600px;height:400px;"></div>
 </body>
 </html>
