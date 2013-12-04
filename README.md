@@ -12,6 +12,7 @@ to address it.
 ## XAPIWrapper
 This plugin is for the XAPIWrapper so it is included as a submodule at the base level. Since the XAPIWrapper is needed, the ADL Verbs project is also included as a submodule at the base level and the third-party XAPIWrapper javascript dependencies are included in the `js/` folder. A sample ADL video in .mp4 format is included in the `media/` folder as well. To configure the LRS endpoints and actor being used, please consult the XAPIWrapper ReadMe.
 
+__NOTE:__ To update the submodules with the lastest code from each repository, at the base of this repo just run `git submodule foreach git pull origin master`
 
 ## Popcorn.js
 Popcorn.js is an HTML5 media framework written in JavaScript for filmmakers, web developers, and anyone who wants to create time-based interactive media on the web. Popcorn.js is part of Mozilla's Popcorn project. Once a video is created using popcorn, it can be added to the list of videos inside of the ADL XAPIVideo plugin. [For more information about Popcorn.js, visit here.](http://popcornjs.org/)
