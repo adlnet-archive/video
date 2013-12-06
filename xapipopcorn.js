@@ -29,7 +29,7 @@
         var actor = ADL.XAPIWrapper.lrs.actor ? ADL.XAPIWrapper.lrs.actor :
             {"account":{"name":"tester", "homePage":"uri:testaccount"}};
 
-        var compContext = competency ? {"contextActivities":{"parent" : [{"id": "compID:" + competency}]}} : null 
+        var compContext = competency ? {"contextActivities":{"other" : [{"id": "compID:" + competency}]}} : null 
 
         // Play event
         myplayer.on("play", function(){
@@ -136,11 +136,9 @@
             var context = {}
             if (compContext){
                 context = compContext
-                context["contextActivities"]["grouping"] = [{"id": objectURI}]
             }
-            else{
-                context = {"contextActivities":{"grouping" : [{"id": objectURI}]}};
-            }
+            context["contextActivities"]["parent"] = [{"id": objectURI}];
+
             stmt["context"] = context
             result["extensions"][extKey] = bench
             report(stmt);
