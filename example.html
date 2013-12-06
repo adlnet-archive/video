@@ -20,7 +20,7 @@
              ADL.XAPIWrapper.changeConfig({"endpoint": "http://localhost:8000/xapi/", "user": "test", "password": "password"});
              
              var pop = Popcorn("#adlvid",{id:"adlvid"});
-             ADL.XAPIVideo.addVideo(pop, "foo");
+             ADL.XAPIVideo.addVideo(pop);
 
              var popyou = Popcorn.youtube("#youtubevid", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
              ADL.XAPIVideo.addVideo(popyou, "biz");
