@@ -1,38 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<!-- support scripts -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+    <!-- support scripts -->
     <script type="text/javascript" src="./js/2.5.3-crypto-sha1.js"></script>
     <script type="text/javascript" src="./js/base64.js"></script>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
-
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
+    
     <!-- ADL scripts -->
     <script type="text/javascript" src="./verbs/verbs.js"></script>
     <script type="text/javascript" src="./xapiwrapper/xapiwrapper.js"></script>
     <script type="text/javascript" src="./xapipopcorn.js"></script>
 
-    <script type="text/javascript">
-        ADL.XAPIWrapper.changeConfig({"endpoint":"http://localhost:8000/xapi/", "user":"test", "password":"password"});
-    </script>
-
     <script>
         $(document).ready(function(){
+             ADL.XAPIWrapper.changeConfig({"endpoint": "http://localhost:8000/xapi/", "user": "test", "password": "password"});
+             
              var pop = Popcorn("#adlvid",{id:"adlvid"});
              ADL.XAPIVideo.addVideo(pop);
-             pop.play();
 
              var popyou = Popcorn.youtube("#youtubevid", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
-             ADL.XAPIVideo.addVideo(popyou);
-             popyou.play();
+             ADL.XAPIVideo.addVideo(popyou, "biz");
+
+            $("#creds").hide()
+            $("#name").html("test")
+            $("#lrs").html("http://localhost:8000/xapi/")
+
+            $("#creds").submit(function(event){
+                var endpoint = $("#lrsEndpoint").val() ? $("#lrsEndpoint").val() : "http://localhost:8000/xapi/"
+                var username = $("#lrsUsername").val() ? $("#lrsUsername").val() : "test"
+                var password = $("#lrsPassword").val() ? $("#lrsPassword").val() : "password"
+
+                ADL.XAPIWrapper.changeConfig({"endpoint": endpoint, "user": username, "password": password});
+                $("#creds").hide()
+                $("#name").html(username)
+                $("#lrs").html(endpoint)
+                event.preventDefault();
+            });
+
+            $("#changeCreds").click(function(){
+                $("#creds").show();
+            });
         });
-    </script> 
+    </script>
 </head>
 
-<body>
-    <video id="adlvid" title="adl video player" width="640" height="360" controls>
-      <source src="./media/intro.mp4" type="video/mp4" />        
-    </video>
-    <div id="youtubevid" style="width:600px;height:400px;"></div>
+<body style="padding-top:50px;">
+    <div class="container">
+        <div class="starter-template" style="padding:40px 15px;text-align:center;">
+            <h1>XAPI Videos</h1>
+            <video id="adlvid" title="adl video player" controls>
+              <source src="./media/intro.mp4" type="video/mp4"/>
+            </video>
+            <div style="width:450px;height:360px;margin:0 auto;" id="youtubevid"></div>
+            <br />
+            <div id="displayDiv">
+                Playing as: <strong><span id="name"></span></strong>. Sending data to: <strong><span id="lrs"></span></strong> <a href="javascript:void(0)" id="changeCreds">change</a>
+            </div>
+        </div>
+        <br />        
+        <form role="form" id="creds">
+            <div class "form-group">
+                <label for="lrsEndpoint">LRS Endpoint</label>
+                <input type="text" class="form-control" id="lrsEndpoint" placeholder="LRS Endpoint">
+            </div>
+            <div class "form-group">
+                <label for="lrsUsername">LRS Username</label>
+                <input type="text" class="form-control" id="lrsUsername" placeholder="Username">
+            </div>
+            <div class "form-group">
+                <label for="lrsPassword">LRS Password</label>
+                <input type="password" class="form-control" id="lrsPassword" placeholder="Password">
+            </div>
+            <br />
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />                
 </body>
 </html>

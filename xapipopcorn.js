@@ -12,13 +12,14 @@
         catch(e){return false;}
     } 
 
-    function PopcornVideo(player) {
+    function PopcornVideo(player, comp) {
         var myplayer = player;
         var playerID = player.media.id;
         var firstQuartileHit = false;
         var halfwayHit = false;
         var thirdQuartileHit = false;
         var isTracking = true;
+        var competency = comp;
 
         // Youtube videos don't have children
         var objectURI = player.media.children[0].src ? player.media.children[0].src : player.media.src;
@@ -27,6 +28,8 @@
         // Edit the actor inside of the wrapper or just include it here
         var actor = ADL.XAPIWrapper.lrs.actor ? ADL.XAPIWrapper.lrs.actor :
             {"account":{"name":"tester", "homePage":"uri:testaccount"}};
+
+        var compContext = competency ? {"contextActivities":{"parent" : [{"id": "compID:" + competency}]}} : null 
 
         // Play event
         myplayer.on("play", function(){
@@ -103,7 +106,11 @@
         });    
 
         function startstuff(launched){
-            stmt = {"actor":actor, "object": videoActivity}
+            var stmt = {"actor":actor, "object": videoActivity}
+            if (compContext){
+                stmt["context"] = compContext
+            }
+
             if (launched){
                 stmt["verb"] = ADL.verbs.launched
             }
@@ -120,37 +127,62 @@
             var bench = "PT" + benchTime + "S";
             var extKey = "resultExt:" + quartile
             var result = {"extensions":{}};
-            var context = {"contextActivities":{"parent" : [videoActivity]}};
-            result["extensions"][extKey] = bench
-            report({"actor":actor,
+            
+
+            var stmt = {"actor":actor,
                     "verb":ADL.verbs.progressed,
                     "object":benchObj,
-                    "result":result,
-                    "context":context});
+                    "result":result}
+            var context = {}
+            if (compContext){
+                context = compContext
+                context["contextActivities"]["grouping"] = [{"id": objectURI}]
+            }
+            else{
+                context = {"contextActivities":{"grouping" : [{"id": objectURI}]}};
+            }
+            stmt["context"] = context
+            result["extensions"][extKey] = bench
+            report(stmt);
         }
 
         function pauseStuff(pauseTime){
             var paused = "PT" + pauseTime + "S";
-            report({"actor":actor, 
+            var stmt = {"actor":actor, 
                     "verb":ADL.verbs.suspended,
                     "object":videoActivity, 
-                    "result":{"extensions":{"resultExt:paused":paused}}});
+                    "result":{"extensions":{"resultExt:paused":paused}}}
+
+            if (compContext){
+                stmt["context"] = compContext
+            }
+            report(stmt);
         }
 
         function seekStuff(seekTime){
             var seeked = "PT" + seekTime + "S";
-            report({"actor":actor, 
+            var stmt = {"actor":actor, 
                     "verb":ADL.verbs.interacted,
                     "object":videoActivity, 
-                    "result":{"extensions":{"resultExt:seeked": seeked}}});
+                    "result":{"extensions":{"resultExt:seeked": seeked}}}
+            
+            if (compContext){
+                stmt["context"] = compContext
+            }             
+            report(stmt);
         }
 
         function endStuff(endTime) {
             var duration = "PT" + Math.round(endTime) + "S";
-            report({"actor":actor, 
+            var stmt = {"actor":actor, 
                     "verb":ADL.verbs.completed, 
                     "object":videoActivity, 
-                    "result":{"duration":duration, "completion": true}});
+                    "result":{"duration":duration, "completion": true}}
+
+            if (compContext){
+                stmt["context"] = compContext
+            }
+            report(stmt);
             // Reset video quartile states
             firstQuartileHit = halfwayHit = thirdQuartileHit = false;
         }
@@ -175,10 +207,10 @@
         this._videos = {};
     };
 
-    XAPIVideo.prototype.addVideo = function(player) {
+    XAPIVideo.prototype.addVideo = function(player, comp) {
         try{
             var playerID = player.media.id
-            var v = new PopcornVideo(player)
+            var v = new PopcornVideo(player, comp)
         }
         catch(e){
             throw "Cannot add video: " + e.message;
@@ -202,7 +234,7 @@
             v.push(k);
         }
         return v;
-    }
+    };
 
     ADL.XAPIVideo = new XAPIVideo();
 
