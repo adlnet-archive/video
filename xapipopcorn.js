@@ -29,8 +29,6 @@
         var actor = ADL.XAPIWrapper.lrs.actor ? ADL.XAPIWrapper.lrs.actor :
             {"account":{"name":"tester", "homePage":"uri:testaccount"}};
 
-        var compContext = competency ? {"contextActivities":{"other" : [{"id": "compID:" + competency}]}} : null 
-
         // Play event
         myplayer.on("play", function(){
             var currentTime = myplayer.currentTime()
