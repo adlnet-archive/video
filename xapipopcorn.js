@@ -107,8 +107,8 @@
 
         function startstuff(launched){
             var stmt = {"actor":actor, "object": videoActivity}
-            if (compContext){
-                stmt["context"] = compContext
+            if (competency){
+                stmt["context"] = {"contextActivities":{"other" : [{"id": "compID:" + competency}]}}
             }
 
             if (launched){
@@ -133,12 +133,11 @@
                     "verb":ADL.verbs.progressed,
                     "object":benchObj,
                     "result":result}
-            var context = {}
-            if (compContext){
-                context = compContext
+            var context = {"contextActivities":{"parent":[{"id": objectURI}]}};
+            
+            if (competency){
+                context["contextActivities"]["other"] = [{"id": "compID:" + competency}]
             }
-            context["contextActivities"]["parent"] = [{"id": objectURI}];
-
             stmt["context"] = context
             result["extensions"][extKey] = bench
             report(stmt);
@@ -151,8 +150,8 @@
                     "object":videoActivity, 
                     "result":{"extensions":{"resultExt:paused":paused}}}
 
-            if (compContext){
-                stmt["context"] = compContext
+            if (competency){
+                stmt["context"] = {"contextActivities":{"other" : [{"id": "compID:" + competency}]}}
             }
             report(stmt);
         }
@@ -164,8 +163,8 @@
                     "object":videoActivity, 
                     "result":{"extensions":{"resultExt:seeked": seeked}}}
             
-            if (compContext){
-                stmt["context"] = compContext
+            if (competency){
+                stmt["context"] = {"contextActivities":{"other" : [{"id": "compID:" + competency}]}}
             }             
             report(stmt);
         }
@@ -177,8 +176,8 @@
                     "object":videoActivity, 
                     "result":{"duration":duration, "completion": true}}
 
-            if (compContext){
-                stmt["context"] = compContext
+            if (competency){
+                stmt["context"] = {"contextActivities":{"other" : [{"id": "compID:" + competency}]}}
             }
             report(stmt);
             // Reset video quartile states
