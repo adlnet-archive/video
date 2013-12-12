@@ -2,7 +2,14 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
     <!-- support scripts -->
     <script type="text/javascript" src="./js/2.5.3-crypto-sha1.js"></script>
     <script type="text/javascript" src="./js/base64.js"></script>
@@ -17,72 +24,111 @@
 
     <script>
         $(document).ready(function(){
-             ADL.XAPIWrapper.changeConfig({"endpoint": "http://localhost:8000/xapi/", "user": "test", "password": "password"});
-             
-             var pop = Popcorn("#adlvid",{id:"adlvid"});
-             ADL.XAPIVideo.addVideo(pop);
+            if (ADL.XAPIWrapper.lrs['actor'] === undefined) {
+                ADL.XAPIWrapper.lrs['actor'] = JSON.stringify({"mbox":"mailto:anon@example.com", "name":"anonymous"});
+            }
+            if (ADL.XAPIWrapper.lrs['endpoint'] === undefined) {
+                ADL.XAPIWrapper.lrs['endpoint'] = "https://lrs.adlnet.gov/xapi/";
+            }
+            if (ADL.XAPIWrapper.lrs['user'] === undefined) {
+                ADL.XAPIWrapper.lrs['user'] = "test";
+            }
+            if (ADL.XAPIWrapper.lrs['password'] === undefined) {
+                ADL.XAPIWrapper.lrs['password'] = "password";
+            }
 
-             var popyou = Popcorn.youtube("#youtubevid", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
-             ADL.XAPIVideo.addVideo(popyou, "biz");
+            var comp = Popcorn.youtube("#compvid", "http://www.youtube.com/watch?v=tlBbt5niQto");
+            comp.autoplay(false);        
+            ADL.XAPIVideo.addVideo(comp, "http://adlnet.gov/competency/scorm/choosing-an-lms/part5");
 
-            $("#creds").hide()
-            $("#name").html("test")
-            $("#lrs").html("http://localhost:8000/xapi/")
+            $("#creds").hide();
+            $("#name").html(getName());
+            $("#lrs").html(ADL.XAPIWrapper.lrs.endpoint);
 
             $("#creds").submit(function(event){
-                var endpoint = $("#lrsEndpoint").val() ? $("#lrsEndpoint").val() : "http://localhost:8000/xapi/"
-                var username = $("#lrsUsername").val() ? $("#lrsUsername").val() : "test"
-                var password = $("#lrsPassword").val() ? $("#lrsPassword").val() : "password"
+                var endpoint = $("#lrsEndpoint").val();
+                var username = $("#lrsUsername").val();
+                var password = $("#lrsPassword").val();
+                var agentname = $("#actorname").val();
+                var agentmbox = "mailto:" + $("#actormbox").val();
 
-                ADL.XAPIWrapper.changeConfig({"endpoint": endpoint, "user": username, "password": password});
-                $("#creds").hide()
-                $("#name").html(username)
-                $("#lrs").html(endpoint)
+                ADL.XAPIWrapper.changeConfig({"endpoint": endpoint, "user": username, "password": password, "actor": JSON.stringify({"mbox":"mailto:"+agentmbox, "name":agentname})});
+                
+                $("#creds").hide();
+                $("#name").html(getName());
+                $("#lrs").html(ADL.XAPIWrapper.lrs.endpoint);
                 event.preventDefault();
             });
 
             $("#changeCreds").click(function(){
+                setFormInfo();
                 $("#creds").show();
             });
         });
+
+        function getName() {
+            var actor = JSON.parse(ADL.XAPIWrapper.lrs.actor);
+            if (actor === undefined){
+                return "anonymous";
+            }
+            var name = actor.name;
+            if (name === undefined) {
+                name = actor.mbox.substring(7);
+            }
+            return name;
+        }
+
+        function setFormInfo() {
+            $("#lrsEndpoint").val(ADL.XAPIWrapper.lrs.endpoint);
+            $("#lrsUsername").val(ADL.XAPIWrapper.lrs.user);
+            $("#lrsPassword").val(ADL.XAPIWrapper.lrs.password);
+            var actor = JSON.parse(ADL.XAPIWrapper.lrs.actor);
+            $("#actorname").val(actor.name?actor.name : "");
+            $("#actormbox").val(actor.mbox.substring(7));
+        }
     </script>
 </head>
 
-<body style="padding-top:50px;">
-    <div class="container">
-        <div class="starter-template" style="padding:40px 15px;text-align:center;">
-            <h1>XAPI Videos</h1>
-            <video id="adlvid" title="adl video player" controls>
-              <source src="./media/intro.mp4" type="video/mp4"/>
-            </video>
-            <div style="width:450px;height:360px;margin:0 auto;" id="youtubevid"></div>
-            <br />
+<body>
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+<a class="navbar-brand" href="/">Competency</a>
+</nav>
+<div class="container">
+        <div class="starter-template" style="padding:40px 15px;text-align:center;">        
+            <div style="width:450px;height:360px;margin:0 auto;" id="compvid"></div>
             <div id="displayDiv">
-                Playing as: <strong><span id="name"></span></strong>. Sending data to: <strong><span id="lrs"></span></strong> <a href="javascript:void(0)" id="changeCreds">change</a>
-            </div>
+        Playing as: <strong><span id="name"></span></strong>. Sending data to: <strong><span id="lrs"></span></strong> <a href="javascript:void(0)" id="changeCreds">change</a>
         </div>
-        <br />        
-        <form role="form" id="creds">
-            <div class "form-group">
-                <label for="lrsEndpoint">LRS Endpoint</label>
-                <input type="text" class="form-control" id="lrsEndpoint" placeholder="LRS Endpoint">
-            </div>
-            <div class "form-group">
-                <label for="lrsUsername">LRS Username</label>
-                <input type="text" class="form-control" id="lrsUsername" placeholder="Username">
-            </div>
-            <div class "form-group">
-                <label for="lrsPassword">LRS Password</label>
-                <input type="password" class="form-control" id="lrsPassword" placeholder="Password">
-            </div>
-            <br />
-            <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        </div>
+    <br />
+    <div class="text-center">
+    <form role="form" class="form-inline" id="creds">
+        <div class="form-group">
+            <label class="sr-only" for="lrsEndpoint">LRS Endpoint</label>
+            <input type="text" class="form-control" id="lrsEndpoint" placeholder="LRS Endpoint">
+        </div>
+        <br />
+                <div class="form-group">
+            <label class="sr-only" for="lrsUsername">LRS Username</label>
+            <input type="text" class="form-control" id="lrsUsername" placeholder="Username">
+        </div>
+                <div class="form-group">
+            <label class="sr-only" for="lrsPassword">LRS Password</label>
+            <input type="password" class="form-control" id="lrsPassword" placeholder="Password">
+        </div>
+                <br />
+        <div class="form-group">
+            <label class="sr-only" for="actorname">Your name</label>
+            <input type="text" class="form-control" id="actorname" placeholder="Your name">
+        </div>
+        <div class="form-group">
+            <label class="sr-only" for="actormbox">Your email</label>
+            <input type="email" class="form-control" id="actormbox" placeholder="Email">
+        </div>
+        <br />
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
     </div>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />                
+</div>
 </body>
 </html>
