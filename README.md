@@ -30,6 +30,7 @@ Nothing gets sent to the LRS at this point, it is only there in case you don't w
 To create a Popcorn player with a local video and add it to the XAPIVideo list, when the HTML doc is ready do this:
 ```JavaScript
 	 var pop = Popcorn("#adlvid",{id:"adlvid"});
+     pop.media.src = "video source";
 	 ADL.XAPIVideo.addVideo(pop);
 	 pop.play();
 ```
@@ -39,6 +40,7 @@ The first parameter is the name of the div the video is placed in, and the secon
 To crate a Popcorn player with a YouTube video and add it to the XAPIVideo list, when the HTML doc is ready do this:
 ```JavaScript
      var popyou = Popcorn.youtube("#youtubevid", "http://www.youtube.com/watch?v=IUHpRoFkI8k");
+     pop.media.src = "http://www.youtube.com/watch?v=IUHpRoFkI8k";     
      ADL.XAPIVideo.addVideo(popyou);
      popyou.play();
 ```
