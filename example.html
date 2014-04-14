@@ -38,7 +38,8 @@
             }
 
             var comp = Popcorn.youtube("#compvid", "http://www.youtube.com/watch?v=tlBbt5niQto");
-            comp.autoplay(false);        
+            comp.media.src = "http://www.youtube.com/watch?v=tlBbt5niQto";
+            comp.autoplay(false);
             ADL.XAPIVideo.addVideo(comp, "http://adlnet.gov/competency/scorm/choosing-an-lms/part5");
 
             $("#creds").hide();
