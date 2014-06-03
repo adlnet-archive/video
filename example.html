@@ -11,15 +11,13 @@
     <![endif]-->
 
     <!-- support scripts -->
-    <script type="text/javascript" src="./js/2.5.3-crypto-sha1.js"></script>
-    <script type="text/javascript" src="./js/base64.js"></script>
+
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="http://popcornjs.org/code/dist/popcorn-complete.min.js"></script>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
     
     <!-- ADL scripts -->
-    <script type="text/javascript" src="./verbs/verbs.js"></script>
-    <script type="text/javascript" src="./xapiwrapper/xapiwrapper.js"></script>
+    <script type="text/javascript" src="./xapiwrapper/xapiwrapper.min.js"></script>
     <script type="text/javascript" src="./xapipopcorn.js"></script>
 
     <script>
@@ -40,7 +38,7 @@
             var comp = Popcorn.youtube("#compvid", "http://www.youtube.com/watch?v=tlBbt5niQto");
             comp.media.src = "http://www.youtube.com/watch?v=tlBbt5niQto";
             comp.autoplay(false);
-            ADL.XAPIVideo.addVideo(comp, "http://adlnet.gov/competency/scorm/choosing-an-lms/part5");
+            ADL.XAPIVideo.addVideo(comp, "http://adlnet.gov/competency/scorm/choosing-an-lms/part5", true, false, false, false);
 
             $("#creds").hide();
             $("#name").html(getName());

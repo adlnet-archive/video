@@ -12,7 +12,7 @@
         catch(e){return false;}
     } 
 
-    function PopcornVideo(player, comp) {
+    function PopcornVideo(player, comp, tlaunch, tpause, tseek, tquartile) {
         var myplayer = player;
         var playerID = player.media.id;
         var firstQuartileHit = false;
@@ -20,6 +20,11 @@
         var thirdQuartileHit = false;
         var isTracking = true;
         var competency = comp;
+
+        var trackQuartile = tquartile;
+        var trackSeek = tseek;
+        var trackPause = tpause;
+        var trackLaunch = tlaunch;
 
         // Youtube videos don't have children
         var objectURI = "act:unknown";
@@ -38,70 +43,79 @@
 
         // Play event
         myplayer.on("play", function(){
-            var currentTime = myplayer.currentTime()
-            // This if is a youtube workaround - when replaying youtube vids the roundTime is the same as the duration
-            if (currentTime == Math.round(myplayer.duration())){
-                log('youtube video ' + playerID + ' launched weird')
-                startstuff(true)
-            }
-            // Playing after pause
-            else if (currentTime != 0){
-                log('video ' + playerID + ' resumed')
-                startstuff(false)
-            }
-            // Normal start when vid is launched
-            else{
-                log('video ' + playerID + ' launched')
-                startstuff(true)
+            if (trackLaunch){
+                var currentTime = myplayer.currentTime()
+                // This if is a youtube workaround - when replaying youtube vids the roundTime is the same as the duration
+                if (currentTime == Math.round(myplayer.duration())){
+                    log('youtube video ' + playerID + ' launched weird')
+                    startstuff(true)
+                }
+                // Playing after pause
+                else if (currentTime != 0){
+                    log('video ' + playerID + ' resumed')
+                    startstuff(false)
+                }
+                // Normal start when vid is launched
+                else{
+                    log('video ' + playerID + ' launched')
+                    startstuff(true)
+                }
             }
         });
 
         // Every second event
         myplayer.on("timeupdate", function(){
-            var currentTime = myplayer.roundTime()
-            // If stmt to catch specific times - the hits get reset to false when video ends
-            if (!firstQuartileHit && currentTime == Math.round(myplayer.duration() * .25)){
-                log('video ' + playerID + ' first point')
-                firstQuartileHit = true
-                middleStuff("firstquartile", currentTime)
-            }
-            else if (!halfwayHit && currentTime == Math.round(myplayer.duration() * .5)){
-                log('video ' + playerID + ' half point')
-                halfwayHit = true
-                middleStuff("halfway", currentTime)
-            }
-            else if (!thirdQuartileHit && currentTime == Math.round(myplayer.duration() * .75)){
-                log('video ' + playerID + ' third point')
-                thirdQuartileHit = true
-                middleStuff("thirdquartile", currentTime)
+            if (trackQuartile){
+                var currentTime = myplayer.roundTime()
+                // If stmt to catch specific times - the hits get reset to false when video ends
+                if (!firstQuartileHit && currentTime == Math.round(myplayer.duration() * .25)){
+                    log('video ' + playerID + ' first point')
+                    firstQuartileHit = true
+                    middleStuff("firstquartile", currentTime)
+                }
+                else if (!halfwayHit && currentTime == Math.round(myplayer.duration() * .5)){
+                    log('video ' + playerID + ' half point')
+                    halfwayHit = true
+                    middleStuff("halfway", currentTime)
+                }
+                else if (!thirdQuartileHit && currentTime == Math.round(myplayer.duration() * .75)){
+                    log('video ' + playerID + ' third point')
+                    thirdQuartileHit = true
+                    middleStuff("thirdquartile", currentTime)
+                }
             }
         });
 
         // Pause event
         myplayer.on("pause", function(){
-            var currentTime = myplayer.roundTime()
-            // If stmt is a youtube workaround - youtube vids pause right before they end
-            if (currentTime != Math.round(myplayer.duration())){
-                log('video ' + playerID + ' paused')
-                pauseStuff(currentTime)
+            if (trackPause){
+                var currentTime = myplayer.roundTime()
+                // If stmt is a youtube workaround - youtube vids pause right before they end
+                if (currentTime != Math.round(myplayer.duration())){
+                    log('video ' + playerID + ' paused')
+                    pauseStuff(currentTime)
+                }
             }
          });
 
         // Seeked event
         myplayer.on("seeked", function(){
-            var currentTime = myplayer.roundTime()
-            // If try to replay movie, instead of playing it fires seeked
-            if (currentTime != 0){
-                log('seeked ' + playerID + ' to ' + currentTime)
-                seekStuff(currentTime)
+            if (trackSeek){
+                var currentTime = myplayer.roundTime()
+                // If try to replay movie, instead of playing it fires seeked
+                if (currentTime != 0){
+                    log('seeked ' + playerID + ' to ' + currentTime)
+                    seekStuff(currentTime)
+                }
+                // Youtube workaround - videos seek to 0 when replayed or launched
+                else{
+                    log('seeked to 0s so really launched ' + playerID)
+                    startstuff(true)
+                    // Reset video quartile states
+                    firstQuartileHit = halfwayHit = thirdQuartileHit = false;
+                }                
             }
-            // Youtube workaround - videos seek to 0 when replayed or launched
-            else{
-                log('seeked to 0s so really launched ' + playerID)
-                startstuff(true)
-                // Reset video quartile states
-                firstQuartileHit = halfwayHit = thirdQuartileHit = false;
-            }
+
         });
 
         // Ended event
@@ -209,10 +223,10 @@
         this._videos = {};
     };
 
-    XAPIVideo.prototype.addVideo = function(player, comp) {
+    XAPIVideo.prototype.addVideo = function(player, comp, tlaunch, tpause, tseek, tquartile) {
         try{
             var playerID = player.media.id
-            var v = new PopcornVideo(player, comp)
+            var v = new PopcornVideo(player, comp, tlaunch, tpause, tseek, tquartile)
         }
         catch(e){
             throw "Cannot add video: " + e.message;
